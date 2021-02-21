@@ -10,7 +10,7 @@ import time
 try: 
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
-    chrome = webdriver.Chrome(options=options,executable_path='../chromedriver')
+    chrome = webdriver.Chrome(options=options,executable_path='C:\chromedriver')
     chrome.set_page_load_timeout(10)
     chrome.get('https://mbasic.facebook.com/')
     chrome.set_page_load_timeout(10)
@@ -31,10 +31,11 @@ try:
     text = soup.find("div", class_="_4gur _5t8z")
     title = text.find("div",class_="_4gus").text
     content = text.find("span",class_="_li")
-    for span in content.children:
-        print(span.text)
+    print(soup)
+    # for span in content.children:
+    #     print(span.text)
 
-    print(title)
+    # print(title)
 
 finally:
     print('fail')
