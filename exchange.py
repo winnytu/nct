@@ -41,23 +41,43 @@ def get_par02():
 
 @app.route('/exchange/addItem', methods=['POST'])
 def get_par01():
+        loginAccount = request.json['LoginAccount']
         groupName= request.json['groupName']
         category= request.json['category']
-        ownMember = request.json['ownMember']
-        # 一定要轉成字串
-        targetMember =",".join(request.json['targetMember']) 
+        album = request.json['album']
+        desc = request.json['desc']
         exchangeWay = ",".join(request.json['exchangeWay']) 
+        note = ",".join(request.json['note'])
+        ownMember = ",".join(item.ownMember) 
+        targetMember =",".join(item.targetMember)
         
  #建立Connection物件
         conn = pymysql.connect(**db_settings)
     # 建立Cursor物件
         with conn.cursor() as cursor:
         # 新增資料SQL語法
-                add = "INSERT INTO `exchangeitem` (`name`,`category`,`ownMember`,`targetMember`,`exchangeWay`) VALUES (%s,%s,%s,%s,%s)"
-                records = (groupName,  category,ownMember,targetMember,exchangeWay)
-                cursor.execute(add, records)
+                addUserRecord = "INSERT INTO `exchangeUserTable` (`LoginAccount`,`groupName`,`category`,`album`,`desc`,`exchangeWay`,`note`,`ownMember`,`targetMember`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                records = (LoginName,groupName,category,album,desc,img,exchangeWay,note,ownMember,targetMember)
+                cursor.execute(addUserRecord, records)
         conn.commit()
         return request.json
+
+@app.route('/exchange/applyExchange', methods=['POST'])
+def get_par02():
+        loginAccount = request.json['LoginAccount']
+        exchangeItemId = request.json['exchangeItemId']
+        targetMember = request.json['targetMember']
+        ownMember = request.json['ownMember']
+        ExchangeWay = ",".join(request.json['ExchangeWay'])
+        msg = request.json['msg']
+        conn = pymysql.connect(**db_settings)
+        cursor = conn.cursor(cursor = pymysql.cursors.DictCursor)
+        # 建立Cursor物件
+        # 新增資料SQL語法
+        command = "SELECT * FROM `exchangeitem`"
+        cursor.execute(command)c
+        res = cursor.fetchall()
+        return json.dumps(res)
 if __name__ == '__main__':
         app.run(debug=True, port=5500)
 
