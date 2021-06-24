@@ -75,7 +75,7 @@ def get_par02():
         # 建立Cursor物件
         # 新增資料SQL語法
         command = "SELECT * FROM `exchangeitem`"
-        cursor.execute(command)c
+        cursor.execute(command)
         res = cursor.fetchall()
         return json.dumps(res)
 if __name__ == '__main__':
