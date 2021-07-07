@@ -81,4 +81,10 @@ class ItemList(Resource):
             return {'items':[item.json() for item in ExchangeItemModel.find_by_creator(data['creator'])]}
         return {'items':[item.json() for item in ExchangeItemModel.query.all()]}
 
+class MessageList(Resource):
+    def post(self):
+        data = request.get_json()
+        if (data['itemId']):
+            return {'messageList':ExchangeItemModel.find_related_messages(data['itemId'])}
+
     

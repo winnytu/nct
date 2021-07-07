@@ -17,6 +17,22 @@ class MessageModel(db.Model):
         self.fromUser = fromUser      
         self.toUser = toUser
         self.relatedItem = relatedItem
+    def json(self):
+        return {
+            'status':self.status, 
+            'postMessage':self.postMessage,
+            'fromUser':self.fromUser,
+            'toUser':self.toUser,
+            'relatedItem':self.relatedItem,
+        } 
+    def to_dict(self): 
+        result = {}
+        for key in self.__mapper__.c.keys():
+            if type(getattr(self, key)) == datetime: 
+                result[key] = str(getattr(self, key))
+            else:
+                result[key] = getattr(self, key)
+        return result  
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()

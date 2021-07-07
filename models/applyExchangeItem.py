@@ -22,17 +22,25 @@ class ApplyExchangeItemModel(db.Model):
     def json(self):
         return {
                 'itemId ':self.itemId, 
-                'groupName':self.groupName,
-                'album':self.album,
-                'category':self.category,
-                'desc':self.desc,
                 'exchangeWay':self.exchangeWay,
-                'note':self.note,
-                'img':self.img,
                 'ownMember':self.ownMember,
                 'targetMember':self.targetMember,
-                'creator':self.creator,
+                'applier':self.applier,
                 } 
+    # 配合to_dict一起使用
+    def to_json(self, all_vendors):  # 多条结果时转为list(json)
+        v = [ven.to_dict() for ven in all_vendors]
+        return v
+    def to_dict(self):  # 方法二，该方法可以将获取结果进行定制，例如如下是将所有非空值输出成str类型
+        result = {}
+        for key in self.__mapper__.c.keys():
+            if type(getattr(self, key)) == datetime: 
+                result[key] = str(getattr(self, key))
+            elif key == 'password':
+                continue
+            else:
+                result[key] = getattr(self, key)
+        return result
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()

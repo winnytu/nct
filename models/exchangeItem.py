@@ -18,6 +18,7 @@ class ExchangeItemModel(db.Model):
     ownMember = db.Column(ARRAY(db.String))
     targetMember = db.Column(ARRAY(db.String))
     creator = db.Column(db.String(200),db.ForeignKey('users.userName'))
+    relatedMessages= db.relationship('MessageModel',lazy='dynamic')
     create_time = db.Column(db.DateTime, default=datetime.now)
     update_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
     def __init__(self,itemId,groupName,album,category,desc,exchangeWay,note,img,ownMember,targetMember,creator):
@@ -34,7 +35,7 @@ class ExchangeItemModel(db.Model):
         self.creator = creator
     def json(self):
         return {
-                'itemId ':self.itemId, 
+                'itemId':self.itemId, 
                 'groupName':self.groupName,
                 'album':self.album,
                 'category':self.category,
@@ -67,3 +68,6 @@ class ExchangeItemModel(db.Model):
     @classmethod
     def find_by_creator(cls,creator):
         return cls.query.filter_by(creator=creator).all()
+    @classmethod
+    def find_related_messages(cls,itemId):
+        return [item.to_dict() for item in cls.query.filter_by(itemId=itemId).first().relatedMessages]

@@ -28,9 +28,9 @@ class UserRegister(Resource):
     def post(self):
         data = UserRegister.parser.parse_args()
         if UserModel.find_by_email(data['email']):
-            return {'messege':'email已使用過'}
+            return {'errCode':'80001','errMsg':'該信箱已註冊過'}
         elif UserModel.find_by_userName(data['userName']):
-            return {'messege':'userName已使用過'}
+            return {'errCode':'80002','errMsg':'該暱稱已被使用'}
         user = UserModel(**data)
         user.save_to_db()
         userInfo = UserModel.find_by_email(data['email']).to_dict()
@@ -58,7 +58,7 @@ class UserLogin(Resource):
             userInfo['access_token'] = access_token
             return {'status':'success','body':userInfo}
         else:
-            return {'messege':'找不到使用者'}
+            return {'errCode':'80003','errMsg':'登入失敗'}
 
 class UserItem(Resource):
     def post(self):

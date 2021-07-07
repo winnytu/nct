@@ -50,3 +50,9 @@ class UserModel(db.Model):
     @classmethod
     def allApplyItems(cls,userName):
         return [item.json() for item in cls.query.filter_by(userName=userName).first().applyItems]
+    @classmethod
+    def allMessagesSended(cls,userName):
+        return [item.json() for item in cls.query.filter_by(userName=userName).first().msgSendedList]
+    @classmethod
+    def allMessagesReceived(cls,userName):
+        return [item.json() for item in cls.query.filter_by(userName=userName).first().msgReceivedList]

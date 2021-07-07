@@ -5,8 +5,9 @@ from flask_restful import Api
 # resource creating some data
 from flask_jwt_extended import JWTManager
 from resources.user import UserRegister,UserLogin,UserItem
-from resources.exchangeItem import CreateItem, ModifyItem,ItemList
+from resources.exchangeItem import CreateItem, ModifyItem,ItemList,MessageList
 from resources.applyExchangeItem import ApplyExchangeItem
+from resources.message import SendMessage
 from db import db
 
 from flask_cors import CORS
@@ -34,8 +35,10 @@ api.add_resource(UserRegister,'/user/register')
 api.add_resource(CreateItem,'/exchange/createItem')
 api.add_resource(ModifyItem,'/exchange/modifyItem')
 api.add_resource(ItemList,'/exchange/itemList')
+api.add_resource(MessageList,'/exchange/messageList')
 api.add_resource(ApplyExchangeItem,'/exchange/applyItem')
 api.add_resource(UserItem,'/user/myItemList')
+api.add_resource(SendMessage,'/message/send')
 
 # 只要在run這個檔案的時候才會執行 沒加的話則是import的時候就會執行
 if __name__ == "__main__":
