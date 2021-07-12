@@ -3,6 +3,7 @@ from db import db
 from itemIdGenerator import DateEncoder
 import json
 from datetime import datetime
+from models.exchangeItem import ExchangeItemModel 
 
 class UserModel(db.Model):
     __tablename__ = 'users'
@@ -49,7 +50,12 @@ class UserModel(db.Model):
         return [item.json() for item in cls.query.filter_by(userName=userName).first().exchangeItems]
     @classmethod
     def allApplyItems(cls,userName):
-        return [item.json() for item in cls.query.filter_by(userName=userName).first().applyItems]
+        applyList = [item.to_dict() for item in cls.query.filter_by(userName=userName).first().applyItems]
+        applyItemList = []
+        for item in applyList:
+            print(item)
+            applyItemList.append({'applyInfo':item,'exchangeInfo':ExchangeItemModel.find_by_itemId(item['itemId']).to_dict()})
+        return applyItemList
     @classmethod
     def allMessagesSended(cls,userName):
         return [item.json() for item in cls.query.filter_by(userName=userName).first().msgSendedList]

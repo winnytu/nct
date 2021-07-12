@@ -21,7 +21,7 @@ class ApplyExchangeItemModel(db.Model):
         self.applier = applier
     def json(self):
         return {
-                'itemId ':self.itemId, 
+                'itemId':self.itemId, 
                 'exchangeWay':self.exchangeWay,
                 'ownMember':self.ownMember,
                 'targetMember':self.targetMember,
@@ -47,3 +47,7 @@ class ApplyExchangeItemModel(db.Model):
     def delete_from_db(self):
         db.session.delete(self)
         db.session.commit()
+
+    @classmethod
+    def find_by_itemId_userName(cls,itemId,userName):
+        return cls.query.filter_by(itemId=itemId,applier=userName).first()

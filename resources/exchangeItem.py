@@ -1,7 +1,10 @@
 from flask_restful import Resource,request,reqparse,fields,marshal
 from flask_jwt_extended import jwt_required
 from models.exchangeItem import ExchangeItemModel
+from models.applyExchangeItem import ApplyExchangeItemModel
 from itemIdGenerator import ItemIdGenerator
+from sqlalchemy import desc
+from sqlalchemy.sql import func
 
 resource_fields = {
     'groupName' : fields.String,
@@ -77,14 +80,34 @@ class ModifyItem(Resource):
 class ItemList(Resource):
     def post(self):
         data = request.get_json()
-        if (data['creator']):
-            return {'items':[item.json() for item in ExchangeItemModel.find_by_creator(data['creator'])]}
-        return {'items':[item.json() for item in ExchangeItemModel.query.all()]}
+        curPage = data['curPage']
+        # if (data['creator']):
+        #     return {'items':[item.json() for item in ExchangeItemModel.find_by_creator(data['creator'])]}
+        if data['sortType'] == 'hot':
+            itemList = []
+            for item in ExchangeItemModel.query.outerjoin(ApplyExchangeItemModel).group_by(ExchangeItemModel.id).order_by(func.count(ApplyExchangeItemModel.id).desc(), ExchangeItemModel.create_time.desc()).limit(12).offset((curPage*10)-10).all():
+                newItem = item.to_dict()
+                newItem['applyCount'] = item.relatedApplyItems.count()
+                itemList.append(newItem)
+            return {'status':'success','body':itemList,'totalCount':ExchangeItemModel.query.count()}
+        else:
+            itemList = []
+            for item in ExchangeItemModel.query.order_by(desc('create_time')).limit(12).offset((curPage*10)-10).all():
+                newItem = item.to_dict()
+                newItem['applyCount'] = item.relatedApplyItems.count()
+                itemList.append(newItem)
+            return {'status':'success','body':itemList,'totalCount':ExchangeItemModel.query.count()}
+
+class getApplyList(Resource):
+    def post(self):
+        data = request.get_json()
+        if (data['itemId']):
+            return {'messageList':ExchangeItemModel.find_related_apply_items(data['itemId'])}
+
 
 class MessageList(Resource):
     def post(self):
         data = request.get_json()
-        if (data['itemId']):
-            return {'messageList':ExchangeItemModel.find_related_messages(data['itemId'])}
+        return {'messageList':ExchangeItemModel.find_apply_messages(data['itemId'],data['applier'],data['creator'])}
 
     

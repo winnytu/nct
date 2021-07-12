@@ -28,5 +28,13 @@ class ApplyExchangeItem(Resource):
         return {'message':'已送出申請'}
         
 
+class CheckApplyStatus(Resource):
+    @jwt_required()
+    def post(self):
+        data = request.get_json()
+        item = ApplyExchangeItemModel.find_by_itemId_userName(data['itemId'],data['userName'])
+        if item is None:
+            return {'applyStatus':0,'message':'未送出申請'}
+        return {'applyStatus':1,'message':'已送出申請'}
         
 

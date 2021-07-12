@@ -5,8 +5,8 @@ from flask_restful import Api
 # resource creating some data
 from flask_jwt_extended import JWTManager
 from resources.user import UserRegister,UserLogin,UserItem
-from resources.exchangeItem import CreateItem, ModifyItem,ItemList,MessageList
-from resources.applyExchangeItem import ApplyExchangeItem
+from resources.exchangeItem import CreateItem, ModifyItem,ItemList,MessageList,getApplyList
+from resources.applyExchangeItem import ApplyExchangeItem,CheckApplyStatus
 from resources.message import SendMessage
 from db import db
 
@@ -37,6 +37,8 @@ api.add_resource(ModifyItem,'/exchange/modifyItem')
 api.add_resource(ItemList,'/exchange/itemList')
 api.add_resource(MessageList,'/exchange/messageList')
 api.add_resource(ApplyExchangeItem,'/exchange/applyItem')
+api.add_resource(getApplyList,'/exchange/getApplyList')
+api.add_resource(CheckApplyStatus,'/exchange/checkApplyStatus')
 api.add_resource(UserItem,'/user/myItemList')
 api.add_resource(SendMessage,'/message/send')
 

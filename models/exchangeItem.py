@@ -19,6 +19,7 @@ class ExchangeItemModel(db.Model):
     targetMember = db.Column(ARRAY(db.String))
     creator = db.Column(db.String(200),db.ForeignKey('users.userName'))
     relatedMessages= db.relationship('MessageModel',lazy='dynamic')
+    relatedApplyItems= db.relationship('ApplyExchangeItemModel',lazy='dynamic')
     create_time = db.Column(db.DateTime, default=datetime.now)
     update_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
     def __init__(self,itemId,groupName,album,category,desc,exchangeWay,note,img,ownMember,targetMember,creator):
@@ -51,7 +52,7 @@ class ExchangeItemModel(db.Model):
         result = {}
         for key in self.__mapper__.c.keys():
             if type(getattr(self, key)) == datetime: 
-                result[key] = str(getattr(self, key))
+                result[key] = str(datetime.date(getattr(self, key)))
             else:
                 result[key] = getattr(self, key)
         return result  
@@ -71,3 +72,16 @@ class ExchangeItemModel(db.Model):
     @classmethod
     def find_related_messages(cls,itemId):
         return [item.to_dict() for item in cls.query.filter_by(itemId=itemId).first().relatedMessages]
+    @classmethod
+    def find_apply_messages(cls,itemId,applier,creator):
+        itemList = cls.query.filter_by(itemId=itemId).first().relatedMessages
+        newItemList = []
+        for item in itemList:
+            newItem = item.to_dict()
+            if (newItem['fromUser'] == applier and newItem['toUser'] == creator) or (newItem['fromUser']== creator and newItem['toUser'] == applier):
+                newItemList.append(newItem) 
+            print(newItemList)
+        return newItemList
+    @classmethod
+    def find_related_apply_items(cls,itemId):
+        return [item.to_dict() for item in cls.query.filter_by(itemId=itemId).first().relatedApplyItems]
