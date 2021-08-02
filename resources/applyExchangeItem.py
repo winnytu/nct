@@ -1,7 +1,7 @@
 from flask_restful import Resource,request,reqparse,fields,marshal
 from flask_jwt_extended import jwt_required
 from models.applyExchangeItem import ApplyExchangeItemModel
-from models.message import MessageModel
+from models.exchangeMessage import ExchangeMessageModel
 
 class ApplyExchangeItem(Resource):
     parser = reqparse.RequestParser()
@@ -17,7 +17,7 @@ class ApplyExchangeItem(Resource):
         print(request.get_json())
         message =  request.get_json()['message']
         print(message)
-        postMassage = MessageModel('unread',**message)
+        postMassage = ExchangeMessageModel('unread',**message)
         item.save_to_db()
         postMassage.save_to_db()
         # try: 

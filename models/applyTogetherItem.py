@@ -3,22 +3,28 @@ from db import db
 from datetime import datetime
 from sqlalchemy.dialects.postgresql import ARRAY
 
-class ApplyExchangeItemModel(db.Model):
-    __tablename__= "exchange_apply"
+class ApplyTogetherItemModel(db.Model):
+    __tablename__= "together_apply"
     id = db.Column(db.Integer,primary_key=True)
-    itemId = db.Column(db.String(200),db.ForeignKey('exchange_items.itemId'))
-    exchangeWay = db.Column(ARRAY(db.String))
-    ownMember = db.Column(ARRAY(db.String))
-    targetMember = db.Column(ARRAY(db.String))
+    itemId = db.Column(db.String(200),db.ForeignKey('together_items.itemId'))
+    itemListA = db.Column(ARRAY(db.String))
+    itemListB = db.Column(ARRAY(db.String))
     applier = db.Column(db.String(200),db.ForeignKey('users.userName'))
     create_time = db.Column(db.DateTime, default=datetime.now)
     update_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
-    def __init__(self,itemId,exchangeWay,ownMember,targetMember,applier):
+    def __init__(self,itemId,itemListA,itemListB,applier):
         self.itemId = itemId 
-        self.exchangeWay = exchangeWay
-        self.ownMember = ownMember     
-        self.targetMember = targetMember
+        self.itemListA = itemListA
+        self.itemListB = itemListB
         self.applier = applier
+    def json(self):
+        return {
+                'itemId':self.itemId, 
+                'exchangeWay':self.exchangeWay,
+                'ownMember':self.ownMember,
+                'targetMember':self.targetMember,
+                'applier':self.applier,
+                } 
     # 配合to_dict一起使用
     def to_json(self, all_vendors):  # 多条结果时转为list(json)
         v = [ven.to_dict() for ven in all_vendors]
@@ -43,3 +49,7 @@ class ApplyExchangeItemModel(db.Model):
     @classmethod
     def find_by_itemId_userName(cls,itemId,userName):
         return cls.query.filter_by(itemId=itemId,applier=userName).first()
+
+    @classmethod
+    def find_by_itemId(cls,itemId):
+        return cls.query.filter_by(itemId=itemId).first()

@@ -2,8 +2,8 @@ import sqlite3
 from db import db 
 from datetime import datetime
 
-class MessageModel(db.Model):
-    __tablename__= "messages"
+class ExchangeMessageModel(db.Model):
+    __tablename__= "exchange_messages"
     id = db.Column(db.Integer,primary_key=True)
     postMessage = db.Column(db.Text)
     status = db.Column(db.String(80))
@@ -17,14 +17,6 @@ class MessageModel(db.Model):
         self.fromUser = fromUser      
         self.toUser = toUser
         self.relatedItem = relatedItem
-    def json(self):
-        return {
-            'status':self.status, 
-            'postMessage':self.postMessage,
-            'fromUser':self.fromUser,
-            'toUser':self.toUser,
-            'relatedItem':self.relatedItem,
-        } 
     def to_dict(self): 
         result = {}
         for key in self.__mapper__.c.keys():

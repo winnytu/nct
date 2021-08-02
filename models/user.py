@@ -4,6 +4,7 @@ from itemIdGenerator import DateEncoder
 import json
 from datetime import datetime
 from models.exchangeItem import ExchangeItemModel 
+from models.togetherItem import TogetherItemModel
 
 class UserModel(db.Model):
     __tablename__ = 'users'
@@ -13,8 +14,9 @@ class UserModel(db.Model):
     userName = db.Column(db.VARCHAR(80),unique=True)
     create_time = db.Column(db.DateTime, default=datetime.now)
     exchangeItems = db.relationship('ExchangeItemModel',lazy='dynamic')
-    applyItems = db.relationship('ApplyExchangeItemModel',lazy='dynamic')
-
+    applyExchangeItems = db.relationship('ApplyExchangeItemModel',lazy='dynamic')
+    togetherItems = db.relationship('TogetherItemModel',lazy='dynamic')
+    applyTogetherItems = db.relationship('ApplyTogetherItemModel',lazy='dynamic')
     def __init__(self,email,password,userName):
         self.email = email
         self.password = password
@@ -47,14 +49,24 @@ class UserModel(db.Model):
         return cls.query.filter_by(userName=userName).first()
     @classmethod
     def allExchangeItem(cls,userName):
-        return [item.json() for item in cls.query.filter_by(userName=userName).first().exchangeItems]
+        return [item.to_dict() for item in cls.query.filter_by(userName=userName).first().exchangeItems]
     @classmethod
-    def allApplyItems(cls,userName):
-        applyList = [item.to_dict() for item in cls.query.filter_by(userName=userName).first().applyItems]
+    def allApplyExchangeItems(cls,userName):
+        applyList = [item.to_dict() for item in cls.query.filter_by(userName=userName).first().applyExchangeItems]
         applyItemList = []
         for item in applyList:
             print(item)
             applyItemList.append({'applyInfo':item,'exchangeInfo':ExchangeItemModel.find_by_itemId(item['itemId']).to_dict()})
+        return applyItemList
+    @classmethod
+    def allTogetherItem(cls,userName):
+        return [item.to_dict() for item in cls.query.filter_by(userName=userName).first().togetherItems]
+    @classmethod
+    def allApplyTogetherItems(cls,userName):
+        applyList = [item.to_dict() for item in cls.query.filter_by(userName=userName).first().applyTogetherItems]
+        applyItemList = []
+        for item in applyList:
+            applyItemList.append({'applyInfo':item,'togetherInfo':TogetherItemModel.find_by_itemId(item['itemId']).to_dict()})
         return applyItemList
     @classmethod
     def allMessagesSended(cls,userName):

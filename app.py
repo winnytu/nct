@@ -5,9 +5,11 @@ from flask_restful import Api
 # resource creating some data
 from flask_jwt_extended import JWTManager
 from resources.user import UserRegister,UserLogin,UserItem
-from resources.exchangeItem import CreateItem, ModifyItem,ItemList,MessageList,getApplyList
+from resources.exchangeItem import CreateExchangeItem, ModifyExchangeItem,ExchangeItemList,ExchangeMessageList,GetExchangeApplyList
 from resources.applyExchangeItem import ApplyExchangeItem,CheckApplyStatus
-from resources.message import SendMessage
+from resources.togetherItem import CreateTogetherItem,TogetherItemList,TogetherMessageList,GetTogetherApplyList
+from resources.applyTogetherItem import ApplyTogetherItem
+from resources.message import SendExchangeMessage,SendTogetherMessage
 from db import db
 
 from flask_cors import CORS
@@ -32,15 +34,23 @@ jwt = JWTManager(app)
 
 api.add_resource(UserLogin,'/user/login')
 api.add_resource(UserRegister,'/user/register')
-api.add_resource(CreateItem,'/exchange/createItem')
-api.add_resource(ModifyItem,'/exchange/modifyItem')
-api.add_resource(ItemList,'/exchange/itemList')
-api.add_resource(MessageList,'/exchange/messageList')
+api.add_resource(CreateExchangeItem,'/exchange/createItem')
+
+api.add_resource(ModifyExchangeItem,'/exchange/modifyItem')
+api.add_resource(ExchangeItemList,'/exchange/itemList')
+api.add_resource(ExchangeMessageList,'/exchange/messageList')
 api.add_resource(ApplyExchangeItem,'/exchange/applyItem')
-api.add_resource(getApplyList,'/exchange/getApplyList')
+api.add_resource(ApplyTogetherItem,'/together/applyItem')
+api.add_resource(GetExchangeApplyList,'/exchange/getApplyList')
 api.add_resource(CheckApplyStatus,'/exchange/checkApplyStatus')
 api.add_resource(UserItem,'/user/myItemList')
-api.add_resource(SendMessage,'/message/send')
+api.add_resource(SendExchangeMessage,'/exchange/sendMessage')
+api.add_resource(SendTogetherMessage,'/together/sendMessage')
+
+api.add_resource(CreateTogetherItem,'/together/createItem')
+api.add_resource(TogetherItemList,'/together/itemList')
+api.add_resource(TogetherMessageList,'/together/messageList')
+api.add_resource(GetTogetherApplyList,'/together/getApplyList')
 
 # 只要在run這個檔案的時候才會執行 沒加的話則是import的時候就會執行
 if __name__ == "__main__":

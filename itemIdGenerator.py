@@ -15,8 +15,8 @@ class ItemIdGenerator():
         # 還要處理刪除資料後可能會重複itemId
         if self._type == 'exchange':
             return 'EI' + today_str+str(count+1).zfill(6)
-        elif self._type == 'group':
-            return 'GI' + today_str+str(count+1).zfill(6)
+        elif self._type == 'together':
+            return 'TI' + today_str+str(count+1).zfill(6)
 
 
 class DateEncoder(json.JSONEncoder):

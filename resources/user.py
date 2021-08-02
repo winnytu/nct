@@ -69,10 +69,24 @@ class UserItem(Resource):
                 'status':'success',
                 'body':{
                     'myExchangeList':UserModel.allExchangeItem(data['userName']),
-                    'myApplyList':UserModel.allApplyItems(data['userName'])
+                    'myApplyExchangeList':UserModel.allApplyExchangeItems(data['userName'])
                 }           
             }, 200
         elif data['type'] == 'together':
             return {
-                'status':'success',        
+                 'status':'success',
+                'body':{
+                    'myTogetherList':UserModel.allTogetherItem(data['userName']),
+                    'myApplyTogetherList':UserModel.allApplyTogetherItems(data['userName'])
+                }         
+            },200
+        elif data['type'] == '':
+            return {
+                'status':'success',
+                'body':{
+                    'myExchangeList':UserModel.allExchangeItem(data['userName']),
+                    'myApplyExchangeList':UserModel.allApplyExchangeItems(data['userName']),
+                    'myTogetherList':UserModel.allTogetherItem(data['userName']),
+                    'myApplyTogetherList':UserModel.allApplyTogetherItems(data['userName'])
+                }         
             },200
