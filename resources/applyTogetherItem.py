@@ -3,6 +3,8 @@ from flask_jwt_extended import jwt_required
 from models.applyTogetherItem import ApplyTogetherItemModel
 from models.togetherMessage import TogetherMessageModel
 from models.togetherItem import TogetherItemModel
+from models.notification import NotificationModel
+import json
 
 class ApplyTogetherItem(Resource):
     parser = reqparse.RequestParser()
@@ -35,6 +37,8 @@ class ApplyTogetherItem(Resource):
         originItem.itemListA = newItemListA
         originItem.itemListB = newItemListB
         originItem.update_to_db()
+        newNotification = NotificationModel('unread','訂單','您有一筆新團申請','您的『'+originItem.itemTitle+'』有一筆新申請',originItem.creator)
+        newNotification.save_to_db()
         return {'status':'success','message':'已送出申請'}
         
 

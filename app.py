@@ -10,6 +10,7 @@ from resources.applyExchangeItem import ApplyExchangeItem,CheckApplyStatus
 from resources.togetherItem import CreateTogetherItem,TogetherItemList,TogetherMessageList,GetTogetherApplyList
 from resources.applyTogetherItem import ApplyTogetherItem
 from resources.message import SendExchangeMessage,SendTogetherMessage
+from resources.notification import GetNotificationList,ReadNotification,GetNotificationCount
 from db import db
 
 from flask_cors import CORS
@@ -52,6 +53,9 @@ api.add_resource(TogetherItemList,'/together/itemList')
 api.add_resource(TogetherMessageList,'/together/messageList')
 api.add_resource(GetTogetherApplyList,'/together/getApplyList')
 
+api.add_resource(GetNotificationList,'/notification/list')
+api.add_resource(GetNotificationCount,'/notification/count')
+api.add_resource(ReadNotification,'/notification/read')
 # 只要在run這個檔案的時候才會執行 沒加的話則是import的時候就會執行
 if __name__ == "__main__":
     app.run(port=5000)
