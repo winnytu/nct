@@ -2,6 +2,8 @@ from flask_restful import Resource,request,reqparse,fields,marshal
 from flask_jwt_extended import jwt_required
 from models.applyExchangeItem import ApplyExchangeItemModel
 from models.exchangeMessage import ExchangeMessageModel
+from models.exchangeItem import ExchangeItemModel
+from models.notification import NotificationModel
 
 class ApplyExchangeItem(Resource):
     parser = reqparse.RequestParser()
@@ -14,12 +16,15 @@ class ApplyExchangeItem(Resource):
     def post(self):
         data = ApplyExchangeItem.parser.parse_args()
         item = ApplyExchangeItemModel(**data)
+        originItem= ExchangeItemModel.find_by_itemId(data['itemId'])
         print(request.get_json())
         message =  request.get_json()['message']
         print(message)
         postMassage = ExchangeMessageModel('unread',**message)
         item.save_to_db()
         postMassage.save_to_db()
+        newNotification = NotificationModel('unread','訂單','您有一筆新交換申請','有米粉想用'+data['ownMember']+'跟你換'+data['targetMember'],originItem.creator)
+        newNotification.save_to_db()
         # try: 
         #     item.save_to_db()
         #     postMassage.save_to_db()

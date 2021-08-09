@@ -58,6 +58,9 @@ class TogetherItemModel(db.Model):
     def find_by_creator(cls,creator):
         return cls.query.filter_by(creator=creator).all()
     @classmethod
+    def find_by_keyword(cls,category,group):
+        return cls.query.filter(category==category,group==group,).all()
+    @classmethod
     def find_related_messages(cls,itemId):
         return [item.to_dict() for item in cls.query.filter_by(itemId=itemId).first().relatedMessages]
     @classmethod
